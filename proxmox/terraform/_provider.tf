@@ -5,14 +5,14 @@ terraform {
   required_providers {
     proxmox = {
       source  = "telmate/proxmox"
-      version = "=2.9.14"
+      version = ">= 2.9.14"
     }
   }
 
   cloud {
     organization = "clcreative"
     workspaces {
-      name = "prx-prod-2"
+      name = "proxmox"
     }
   }
 }
