@@ -1,29 +1,29 @@
-resource "proxmox_vm_qemu" "srv-prod-6" {
-    name = "srv-prod-6"
-    desc = "Kubernetes Production 1 Worker Node 2, Ubuntu LTS"
+resource "proxmox_vm_qemu" "srv-prod-8" {
+    name = "srv-prod-8"
+    desc = "KASM Workspace Production 1, Ubuntu LTS"
     agent = 1
-    target_node = "prx-prod-1"
-    qemu_os = "l26"  # default other
-    bios = "seabios"  # default=ovmf
-    tags = "kube"
+    target_node = "prx-prod-2"
+    qemu_os = "l26"
+    bios = "seabios"
+    tags = ""
 
     define_connection_info = false
 
     # -- only important for full clone
-    # vmid = 20002
-    # clone = "ubuntu-server-test-1"
-    # full_clone = true
-    full_clone = false
+    vmid = 20019
+    clone = "pkr-ubuntu-jammy-1"
+    full_clone = true
+    # full_clone = false
 
     # -- boot process
     onboot = true
     startup = "order=3,up=10"
     automatic_reboot = false  # refuse auto-reboot when changing a setting
 
-    cores = 4
+    cores = 2
     sockets = 1
     cpu = "host"
-    memory = 8192
+    memory = 4096
 
     network {
         bridge = "vmbr1"
@@ -33,13 +33,6 @@ resource "proxmox_vm_qemu" "srv-prod-6" {
 
     scsihw = "virtio-scsi-pci"  # default virtio-scsi-pci
 
-    # disk {
-    #     storage = "pv1"
-    #     type = "virtio"
-    #     size = "40G"
-    #     iothread = 1
-    # }
-
     # -- lifecycle
     lifecycle {
         ignore_changes = [
@@ -47,4 +40,10 @@ resource "proxmox_vm_qemu" "srv-prod-6" {
             vm_state
         ]
     }
+
+    # Cloud Init Settings 
+    ipconfig0 = "ip=10.20.0.20/16,gw=10.20.0.1"
+    nameserver = "10.20.0.1"
+    ciuser = "xcad"
+    sshkeys = var.PUBLIC_SSH_KEY
 }
